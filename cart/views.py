@@ -15,11 +15,12 @@ class CartView(LoginRequiredMixin, View):
 
     def get(self, request):
         cart, carted = Cart.objects.get_or_create(user=request.user)
-        return render(request, self.template_name, {'cart:cart'})
+        return render(request, self.template_name, {'cart':cart})
+
 
 class AddToCartView(LoginRequiredMixin, View):
     def post(self, request, product_id):
-        product=get_object_or_404(Product, id=product_id)
+        product = get_object_or_404(Product, id=product_id)
         cart, created = Cart.objects.get_or_create(user=request.user)
 
 
@@ -31,4 +32,21 @@ class AddToCartView(LoginRequiredMixin, View):
             messages.info(request, message='Количество товара увеличено')
         else:
             messages.success(request, message='Товар добавлен в карзину')
+            return redirect('cart')
+
+
+class RemoveFromCartView(LoginRequiredMixin, View):
+    def post(self, request, item_id):
+        cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+        cart_item.delete()
+        messages.success(request, 'Товар удален из корзины')
+        return redirect('cart')
+
+
+class ClearCartView(LoginRequiredMixin, View):
+    def post(self, request):
+        cart = Cart.objects.filter(user=request.user).first()
+        if cart:
+            cart.items.all().delete()
+            messages.success(request, 'Корзина очищена')
         return redirect('cart')

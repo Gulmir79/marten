@@ -1,4 +1,5 @@
 from django.db import models
+from user.models import CustomUser
 
 # Create your models here.
 class Main(models.Model):
@@ -85,3 +86,16 @@ class ContactUS(models.Model):
     class Meta:
         verbose_name = "Поддержка"
         verbose_name_plural = "Поддержка"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField("Текст коментария")
+    created_at = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies")
+
+    def __str__(self):
+        return f"Comment by{self.user.username} on {self.blog.title}"
+    def is_reply(self):
+        return self.parent is not None

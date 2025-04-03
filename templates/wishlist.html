@@ -38,7 +38,7 @@
                                     {% for item in wishlist_items %}
                                         <tr>
                                             <td class="product-thumbnail">
-                                                <a href="#"><img height="150px" src=" {{item.product.photo.url}}" alt=""></a>
+                                                <a href="#"><img height="150px" src="{{item.product.photo.url}}" alt=""></a>
                                             </td>
                                             <td class="product-name"><a href="#">{{item.product.name}}</a></td>
                                             <td class="product-price-cart"><span class="amount">{{item.product.price}} сом</span></td>
@@ -49,7 +49,10 @@
                                             </td>
                                             <td class="product-subtotal">$110.00</td>
                                             <td class="product-wishlist-cart">
-                                              <a href="#">add to cart</a>
+                                                <form action="{% url 'add_to_cart' item.product.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button type="submit" style="background: none; border: none; cursor: pointer;">Добавить в корзину</button>
+                                                </form>
                                             </td>
                                             <td class="product-remove">
                                                 <form action="{% url 'remove_from_wishlist' item.product.id %}" method="post">

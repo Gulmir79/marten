@@ -47,9 +47,12 @@
                                                     <a title="Quick View" data-toggle="modal" data-target="#exampleModal" href="#">
                                                         <i class="ti-plus"></i>
                                                     </a>
-                                                    <a title="Add To Cart" href="#">
-                                                        <i class="ti-shopping-cart"></i>
-                                                    </a>
+                                                    <form action="{% url 'add_to_cart' product.id %}" method="post">
+                                                          {% csrf_token %}
+                                                            <button type="submit" title="Добавить в корзину" style="background: none; border: none; cursor: pointer;">
+                                                                <i class="ti-shopping-cart"></i>
+                                                            </button>
+                                                      </form>
                                                 </div>
                                                 <div class="product-action-wishlist">
                                                     <form action="{% url 'add_to_wishlist' product.id %}" method="post">

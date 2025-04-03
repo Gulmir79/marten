@@ -70,18 +70,25 @@
                                 </div>
                             </div>
                             <div class="blog-comment-wrapper mt-55">
-                                <h4 class="blog-dec-title">comments : 02</h4>
-                                <div class="single-comment-wrapper mt-35">
+                                <h4 class="blog-dec-title">comments : {{comments/length}}</h4>
+                                {% for comment in comments %}
+                                <div class="single-comment-wrapper mt-35 {% if comment is_reply %}ml-125{%endif%}">
                                     <div class="blog-comment-img">
                                         <img src="assets/img/blog/blog-comment1.png" alt="">
                                     </div>
                                     <div class="blog-comment-content">
-                                        <h4>Anthony Stephens</h4>
-                                        <span>October 14, 2018 </span>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolor magna aliqua. Ut enim ad minim veniam, </p>
+                                        <h4>{{comment.user.username}}</h4>
+                                        <span>{{comment.created_at|date:"d M Y"}}</span>
+                                        <p>{{comment.text}}</p>
                                         <div class="blog-details-btn">
                                             <a href="blog-details.html">read more</a>
                                         </div>
+                                        {% if not comment.is_reply %}
+                                        <button class="reply-btn" onclick="ShowReplyForm({{comment.id}})">Reply</button>
+                                        <form>
+
+                                        </form>
+                                        <
                                     </div>
                                 </div>
                                 <div class="single-comment-wrapper mt-50 ml-125">
@@ -100,12 +107,19 @@
                             </div>
                             <div class="blog-reply-wrapper mt-50">
                                 <h4 class="blog-dec-title">post a comment</h4>
-                                <form action="#">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="leave-form">
-                                                <input type="text" placeholder="Full Name">
-                                            </div>
+                                <form method="post" action="blog_detail" id="blog_id">
+                                    {% csrf_token %}
+                                    {{form.text}}
+                                    <input type="hidden" name="parent" value="">
+                                    <button type="submit">SEND MESSAGE</button>
+                                </form>
+
+                                <script>
+                                                function showReplyForm(commentId) {
+                                                let form = document.getElementById("reply-form-" + commentId);
+                                                form.style.display = (form.style.display === "none") ? "block" : "none";
+                                                }
+                                            </script>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="leave-form">
@@ -119,7 +133,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </form>
                             </div>
                         </div>
                     </div>

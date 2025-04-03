@@ -6,8 +6,12 @@ from user.models import CustomUser
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='cart')
 
+    def get_total_price(self):
+        return sum(item.total_price for item in self.items.all())
+
     def __str__(self):
         return f"Cart of {self.user.username}"
+
 
 
 
@@ -16,8 +20,9 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
+    @property
     def total_price(self):
-        return self.quantity * self.product.price
+        return self.quantity * float(self.product.price)
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in {self.cart.user.username}'s cart"
